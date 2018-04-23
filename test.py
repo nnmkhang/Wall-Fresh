@@ -1,16 +1,39 @@
 import bs4 # allows you to use BS4 (HTML/ XML parser) 
-import requests # allows downloading 
+import urllib2 # imports pythons native url  downloader library
+# store objects in a hashtable so that you can get constant time when searching for collisions 
+url = "https://www.reddit.com/r/all/top/"
+request = urllib2.Request(url)
+html = urllib2.urlopen(request).read()
 
+soup = bs4.BeautifulSoup(html, "html.parser")
+# everything needed is within the <a> class, which gives links, and title
+# to get the subreddit, you have to go to the <a href > part
 
+#table = soup.find('div',attrs={'id':'siteTable'}) # parces the site table from reddit, which excludes the top and side stuff
+# the attrs = attirubutes and the id and siteTable is what is defined
+for table in soup.find('div',attrs={'id':'siteTable'}):
+    print(table.get('data-url'))
 
-def getAmazonPrice(url):
-    res = requests.get(url) # gets the url from the input and gets a request for it 
-    res.raise_for_status() # checkpoint to make sure that the code is downloading the page correctly 
-    soup = bs4.BeautifulSoup(res.text , "html.parser")
-    elems = soup.select('#buyNewSection > div > div > span > span')
-    print elems[0].text
+ # if u do find_all("a",limit = x) x will be the number of things that you find 
     
-url = raw_input("what product would you like to see the price of")
-print url
 
-getAmazonPrice(url)
+
+
+
+
+
+
+
+# make an object which stores: url,title, subreddit
+'''
+ class pic(object):
+     url = ""
+     title = ""
+     subreddit = ""
+
+     def __init__(self,url,title,subreddit):
+         self.url = url
+         self.title = title
+         self.subreddit = subreddit
+
+'''
