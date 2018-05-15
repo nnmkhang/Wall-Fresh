@@ -1,5 +1,6 @@
 import bs4 # allows you to use BS4 (HTML/ XML parser) 
 import urllib2 # imports pythons native url  downloader library
+import urllib
 import time # allows the use of the sleep function
 # store objects in a hashtable so that you can get constant time when searching for collisions
 
@@ -18,7 +19,7 @@ def getUrl(request):
         return urllib2.urlopen(request).read()
     except urllib2.HTTPError,e:
         if( e.code == 429):
-            time.sleep(5)
+            time.sleep(2)
             print "ERROR 429, too many requests. Retrying."
   
             return getUrl(request)
@@ -27,7 +28,7 @@ def getUrl(request):
             return 
 
 
-url = "https://www.reddit.com/r/EarthPorn/"
+url = "https://www.reddit.com/r/wallpapers/top/"
 request = urllib2.Request(url)
 #html = urllib2.urlopen(request).read()
 html = getUrl(request)
@@ -39,35 +40,26 @@ soup = bs4.BeautifulSoup(html, "html.parser")
 #table = soup.find('div',attrs={'id':'siteTable'}) # parces the site table from reddit, which excludes the top and side stuff
 # the attrs = attirubutes and the id and siteTable is what is defined
 #the tag div site table is a list of all of the diffrent links ( each post ) 
-table = soup.find('div',class_= "sitetable")# table is an element that has everything
+table = soup.find('div',class_= "siteTable")# table is an element that has everything
+#print table    # use siteTable, using content to test
 
 links = table.find_all("div", class_ = "thing")
 
 for link in links: # after write all of the links to a file 
-    print link.get('data-url')
+    picUrl= link.get('data-url') # assigns picUrl to the url of the picture
+    print picUrl
+    picName = link.get('data-url')
+    picName = picName.split('/')[-1] # split turns it into an array, [-1] gets the
+    #value without all of the https stuff.
+    print picName
+    #urllib.urlretrieve(picUrl, picName)
+    
 
+# can use urllib.urlretrieve("http://www.digimouth.com/news/media/2011/09/google-logo.jpg", "local-filename.jpg")
+
+# next step is to use selium to go to the next page, and scrape more. 
 
 
  # if u do find_all("a",limit = x) x will be the number of things that you find 
-    
 
 
-
-
-
-
-
-
-# make an object which stores: url,title, subreddit
-'''
- class pic(object):
-     url = ""
-     title = ""
-     subreddit = ""
-
-     def __init__(self,url,title,subreddit):
-         self.url = url
-         self.title = title
-         self.subreddit = subreddit
-
-'''
