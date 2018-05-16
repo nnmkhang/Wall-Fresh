@@ -70,14 +70,12 @@ for link in links: # after write all of the links to a file
             picName = "album error" 
         else: # at this point we need to download the non i.imgur files
             picUrl = "https://i.imgur.com/" + picName +".jpg"
-            print picUrl
-            print picName
             picName = directory+picName+".jpg"
             urllib.urlretrieve(picUrl, picName)
              
     print picUrl
     print picName
-
+# everything is working at this point, only error is the sometimes the none-type error occurs 
     
 
 
