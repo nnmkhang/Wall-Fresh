@@ -10,8 +10,8 @@ import praw
 
 reddit = praw.Reddit(client_id="hYrt1SKHkaf3iw",
                      client_secret = "3vO4C9_g9-YhBinGvlh0Yj7Tjlk",
-                     username="nnmkhang",
-                     password="123456",
+                     username="username",
+                     password="password",
                      user_agent ="prawexample")
 
 subreddit = reddit.subreddit("EarthPorn")
