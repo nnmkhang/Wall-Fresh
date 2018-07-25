@@ -55,7 +55,7 @@ def downloadUrl(url): #this function takes in a url string and downloads it to y
             if(picUrl.split('/')[-2] =="a"): # this indicates an imgur album
                 picName = "Error, This is an album, not downloading"
 
-                print picName
+                print (picName)
 
             else:
                 
@@ -64,22 +64,22 @@ def downloadUrl(url): #this function takes in a url string and downloads it to y
                 #print picUrl 
                 urllib.urlretrieve(picUrl, picName)
         else: # at this point we have hpyer linked stuff
-            print "Error, this is a text post, not downloading" 
+            print ("Error, this is a text post, not downloading" )
 
 
 total =0
 count =0 
 #directory = "C:\\Users\\nnmkh\\Desktop\\Wallpapers\\"
-numOfSub = int(raw_input("How many diffrent subreddits will you be taking photos from? "))
-directory = raw_input("Download location?(copy paste directory path and add a '\\' at the end) ex: C:\\Users\\nnmkh\\Desktop\\Wallpapers\\")
+numOfSub = int(input("How many diffrent subreddits will you be taking photos from? "))
+directory = input("Download location?(copy paste directory path and add a '\\' at the end) ex: C:\\Users\\nnmkh\\Desktop\\Wallpapers\\")
 #numOfSub = 1 # the number of subreddits
 subreddits = []
 
 for i in range(numOfSub):
     #subreddits[i] = sub(tempName,tempNum,tempTop)
-    tempName = str(raw_input("What subreddit do you want? (ex: earthporn) "))
-    tempNum = int(raw_input("how many entries do you want? (ex: 50) "))
-    tempTop = raw_input("do you want hot or top? ").lower()
+    tempName = str(input("What subreddit do you want? (ex: earthporn) "))
+    tempNum = int(input("how many entries do you want? (ex: 50) "))
+    tempTop = input("do you want hot or top? ").lower()
     temp = sub(tempName,tempNum,tempTop) 
     subreddits.append(temp)
 
@@ -116,6 +116,6 @@ for x in range (numOfSub):
 
     
 
-print "Download Complete!"
-raw_input("Press Enter to close") 
+print ("Download Complete!")
+input("Press Enter to close") 
 
