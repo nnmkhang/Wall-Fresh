@@ -48,7 +48,7 @@ def downloadUrl(url): #this function takes in a url string and downloads it to y
     if(picName.split(".")[-1] == "jpg" or picName.split(".")[-1] == "png"):
         picName = directory+picName
         #print picName
-        urllib.urlretrieve(picUrl, picName)
+        urllib.request.urlretrieve(picUrl, picName)
     else:
         if(picUrl.split('/')[2] == "imgur.com"): # its a link to an non i.imgur link
 
@@ -62,7 +62,7 @@ def downloadUrl(url): #this function takes in a url string and downloads it to y
                 picUrl = "https://i.imgur.com/" + picName +".jpg"
                 picName = directory+picName+".jpg"
                 #print picUrl 
-                urllib.urlretrieve(picUrl, picName)
+                urllib.request.urlretrieve(picUrl, picName)
         else: # at this point we have hpyer linked stuff
             print ("Error, this is a text post, not downloading" )
 
@@ -103,7 +103,7 @@ for x in range (numOfSub):
             if (submissions.stickied!= True): # dosnt go through the sitcked content 
                 downloadUrl(submissions.url)
                 count += 1
-                print("Downloading in progress, %d/%d") %(count,total)
+               # print("Downloading in progress, %d/%d") %(count,total)
         
     elif(subreddits[x].getTop() == "hot"):
         s = reddit.subreddit(subreddits[x].getName()).hot(limit = subreddits[x].getPostNum())
@@ -112,10 +112,10 @@ for x in range (numOfSub):
             if (submissions.stickied!= True): # dosnt go through the sitcked content 
                 downloadUrl(submissions.url)
                 count += 1
-                print("Downloading in progress, %d/%d") %(count,total)
+               # print("Downloading in progress, %d/%d")%(count,total)
 
     
 
-print ("Download Complete!")
+print("Download Complete!")
 input("Press Enter to close") 
 
