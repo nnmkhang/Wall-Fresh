@@ -1,4 +1,3 @@
-#this will be the scipt using praw and urrlib to download.
 import os.path
 import praw
 import urllib
