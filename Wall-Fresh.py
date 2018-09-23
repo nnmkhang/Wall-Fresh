@@ -1,6 +1,10 @@
 import os.path
 import praw
 import urllib
+from PIL import Image
+import bs4
+
+
 
 #username: Wall-Fresh
 #passwored: 123456
@@ -43,6 +47,7 @@ class sub:
 def downloadUrl(url): #this function takes in a url string and downloads it to your pc
     picUrl = url
     picName = url.split("/")[-1]
+    #print(picUrl)
 
     if(picName.split(".")[-1] == "jpg" or picName.split(".")[-1] == "png"):
         picName = directory+picName
@@ -60,17 +65,26 @@ def downloadUrl(url): #this function takes in a url string and downloads it to y
                 
                 picUrl = "https://i.imgur.com/" + picName +".jpg"
                 picName = directory+picName+".jpg"
-                #print picUrl 
                 urllib.request.urlretrieve(picUrl, picName)
         else: # at this point we have hpyer linked stuff
             print ("Error, this is a text post, not downloading" )
 
 
+def sizecheck(url):# checks the size of the image and wont download unless its the width and height are over 1920 x 1080
+    im = Image.open(url)
+    width, height = im.size # get size of the image and assign to width and height 
+    if( width < 1920):
+        return False
+    elif( height < 1080): # if either the width or the height are lower than my PC's resolution ( 1980 x 1280 ) the function will return false 
+        return False 
+    return True 
+
 total =0
 count =0 
 #directory = "C:\\Users\\nnmkh\\Desktop\\Wallpapers\\"
 numOfSub = int(input("How many diffrent subreddits will you be taking photos from? "))
-directory = input("Download location?(copy paste directory path and add a '\\' at the end) ex: C:\\Users\\nnmkh\\Desktop\\Wallpapers\\")
+directory = "C:\\users\\nnmkh\\Pictures\Wallpapers\\"
+#input("Download location?(copy paste directory path and add a '\\' at the end) ex: C:\\Users\\nnmkh\\Desktop\\Wallpapers\\")
 #numOfSub = 1 # the number of subreddits
 subreddits = []
 
@@ -100,7 +114,8 @@ for x in range (numOfSub):
         for submissions in s:
         #print submissions.url
             if (submissions.stickied!= True): # dosnt go through the sitcked content 
-                downloadUrl(submissions.url)
+                downloadUrl(submissions.url) # submissions url returns the imgur link for the image. 
+                print(submissions.url)
                 count += 1
                # print("Downloading in progress, %d/%d") %(count,total)
         
