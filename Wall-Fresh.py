@@ -4,6 +4,7 @@ import urllib
 from PIL import Image,ImageFile
 import bs4
 import requests
+import urllib.error
 
 
 
@@ -71,14 +72,18 @@ def downloadUrl(url): #this function takes in a url string and downloads it to y
                 print ("Error, this is a text post, not downloading" )
         return True
     else:
-        print("errrrorrrr")
+        #print("errrrorrrr")
         return False
            
 
 
 def getsizes(uri):
     # get file size *and* image size (None if not known)
-    file = urllib.request.urlopen(uri)
+    try: 
+        file = urllib.request.urlopen(uri)
+    except:
+        return False
+    
     size = file.headers.get("content-length")
     if size: size = int(size)
     p = ImageFile.Parser()
@@ -88,7 +93,7 @@ def getsizes(uri):
             break
         p.feed(data)
         if p.image:
-            print(p.image.size)
+            #print(p.image.size)
             width = p.image.size[0]
             height = p.image.size[1]
             #print(width)
@@ -109,6 +114,7 @@ directory = "C:\\users\\nnmkh\\Pictures\Wallpapers\\"
 #numOfSub = 1 # the number of subreddits
 subreddits = []
 counter = 0
+total = 0
 for i in range(numOfSub):
     #subreddits[i] = sub(tempName,tempNum,tempTop)
     tempName = str(input("What subreddit do you want? (ex: earthporn) "))
@@ -156,10 +162,10 @@ for x in range (numOfSub):
                     if(counter >= lim):
                         break
                 
-                    print(submissions.url)
+                    #print(submissions.url)
                 # print("Downloading in progress, %d/%d")%(count,total)
     counter = 0 
 
-print("Download Complete!")
+print("Download Complete! %d images downloaded." % (total)) 
 input("Press Enter to close") 
 
