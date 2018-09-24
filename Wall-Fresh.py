@@ -1,8 +1,10 @@
 import os.path
 import praw
 import urllib
-from PIL import Image
+from PIL import Image,ImageFile
 import bs4
+import requests
+
 
 
 
@@ -46,38 +48,57 @@ class sub:
 
 def downloadUrl(url): #this function takes in a url string and downloads it to your pc
     picUrl = url
+    #print(url)
     picName = url.split("/")[-1]
     #print(picUrl)
+    if(getsizes(url)):
+        if(picName.split(".")[-1] == "jpg" or picName.split(".")[-1] == "png"):
+            picName = directory+picName
+            urllib.request.urlretrieve(picUrl, picName)
+            
+        else:
+            if(picUrl.split('/')[2] == "imgur.com"): # its a link to an non i.imgur link
+                if(picUrl.split('/')[-2] =="a"): # this indicates an imgur album
+                    picName = "Error, This is an album, not downloading"
+                    return False 
 
-    if(picName.split(".")[-1] == "jpg" or picName.split(".")[-1] == "png"):
-        picName = directory+picName
-        #print picName
-        urllib.request.urlretrieve(picUrl, picName)
+                else:
+                    picUrl = "https://i.imgur.com/" + picName +".jpg"
+                    picName = directory+picName+".jpg"
+                    urllib.request.urlretrieve(picUrl, picName)
+                        
+            else: # at this point we have hpyer linked stuff
+                print ("Error, this is a text post, not downloading" )
+        return True
     else:
-        if(picUrl.split('/')[2] == "imgur.com"): # its a link to an non i.imgur link
-
-            if(picUrl.split('/')[-2] =="a"): # this indicates an imgur album
-                picName = "Error, This is an album, not downloading"
-
-                print (picName)
-
-            else:
-                
-                picUrl = "https://i.imgur.com/" + picName +".jpg"
-                picName = directory+picName+".jpg"
-                urllib.request.urlretrieve(picUrl, picName)
-        else: # at this point we have hpyer linked stuff
-            print ("Error, this is a text post, not downloading" )
-
-
-def sizecheck(url):# checks the size of the image and wont download unless its the width and height are over 1920 x 1080
-    im = Image.open(url)
-    width, height = im.size # get size of the image and assign to width and height 
-    if( width < 1920):
+        print("errrrorrrr")
         return False
-    elif( height < 1080): # if either the width or the height are lower than my PC's resolution ( 1980 x 1280 ) the function will return false 
-        return False 
-    return True 
+           
+
+
+def getsizes(uri):
+    # get file size *and* image size (None if not known)
+    file = urllib.request.urlopen(uri)
+    size = file.headers.get("content-length")
+    if size: size = int(size)
+    p = ImageFile.Parser()
+    while 1:
+        data = file.read(1024)
+        if not data:
+            break
+        p.feed(data)
+        if p.image:
+            print(p.image.size)
+            width = p.image.size[0]
+            height = p.image.size[1]
+            #print(width)
+            #print(height)
+            file.close()
+            if( height < 1080 or width < 1920):
+                return False
+            return True
+            
+
 
 total =0
 count =0 
@@ -111,24 +132,27 @@ for x in range (numOfSub):
     if(subreddits[x].getTop() == "top"):
         lim = subreddits[x].getPostNum()
         s = reddit.subreddit(subreddits[x].getName()).top(limit = lim)
+        
         for submissions in s:
         #print submissions.url
-            if (submissions.stickied!= True): # dosnt go through the sitcked content 
-                downloadUrl(submissions.url) # submissions url returns the imgur link for the image. 
+            if (submissions.stickied != True): # dosnt go through the sitcked content 
+                if(not downloadUrl(submissions.url)):# submissions url returns the imgur link for the image. 
+                    lim += 1
                 print(submissions.url)
-                count += 1
+                
                # print("Downloading in progress, %d/%d") %(count,total)
         
     elif(subreddits[x].getTop() == "hot"):
-        s = reddit.subreddit(subreddits[x].getName()).hot(limit = subreddits[x].getPostNum())
+        lim = subreddits[x].getPostNum()
+        s = reddit.subreddit(subreddits[x].getName()).hot(limit = lim)
         for submissions in s:
         #print submissions.url
             if (submissions.stickied!= True): # dosnt go through the sitcked content 
-                downloadUrl(submissions.url)
-                count += 1
+                if(not downloadUrl(submissions.url)): # submissions url returns the imgur link for the image. 
+                    lim += 1
+                print(submissions.url)
                # print("Downloading in progress, %d/%d")%(count,total)
 
-    
 
 print("Download Complete!")
 input("Press Enter to close") 
