@@ -94,7 +94,7 @@ def getsizes(uri):
             #print(width)
             #print(height)
             file.close()
-            if( height < 1080 or width < 1920):
+            if( width < height or height < 1080 or width < 1920):
                 return False
             return True
             
@@ -108,7 +108,7 @@ directory = "C:\\users\\nnmkh\\Pictures\Wallpapers\\"
 #input("Download location?(copy paste directory path and add a '\\' at the end) ex: C:\\Users\\nnmkh\\Desktop\\Wallpapers\\")
 #numOfSub = 1 # the number of subreddits
 subreddits = []
-
+counter = 0
 for i in range(numOfSub):
     #subreddits[i] = sub(tempName,tempNum,tempTop)
     tempName = str(input("What subreddit do you want? (ex: earthporn) "))
@@ -131,28 +131,34 @@ for x in range(numOfSub):
 for x in range (numOfSub):
     if(subreddits[x].getTop() == "top"):
         lim = subreddits[x].getPostNum()
-        s = reddit.subreddit(subreddits[x].getName()).top(limit = lim)
+        s = reddit.subreddit(subreddits[x].getName()).top(limit = 1000)
         
         for submissions in s:
         #print submissions.url
-            if (submissions.stickied != True): # dosnt go through the sitcked content 
-                if(not downloadUrl(submissions.url)):# submissions url returns the imgur link for the image. 
-                    lim += 1
+            if (not submissions.stickied or not submissions.pinned or not submissions.selftext): # dosnt go through the sitcked content 
+                if(downloadUrl(submissions.url)):# submissions url returns the imgur link for the image. 
+                    counter += 1
+                    if (counter >= lim):
+                        break
                 print(submissions.url)
                 
                # print("Downloading in progress, %d/%d") %(count,total)
         
     elif(subreddits[x].getTop() == "hot"):
         lim = subreddits[x].getPostNum()
-        s = reddit.subreddit(subreddits[x].getName()).hot(limit = lim)
+        s = reddit.subreddit(subreddits[x].getName()).hot(limit = 1000)
         for submissions in s:
-        #print submissions.url
-            if (submissions.stickied!= True): # dosnt go through the sitcked content 
-                if(not downloadUrl(submissions.url)): # submissions url returns the imgur link for the image. 
-                    lim += 1
-                print(submissions.url)
-               # print("Downloading in progress, %d/%d")%(count,total)
-
+            #print submissions.url
+            if (not submissions.stickied or not submissions.pinned or not submissions.selftext): # dosnt go through the sitcked content 
+               # print(dir(submissions))
+                if(downloadUrl(submissions.url)): # submissions url returns the imgur link for the image. 
+                    counter += 1
+                    if(counter >= lim):
+                        break
+                
+                    print(submissions.url)
+                # print("Downloading in progress, %d/%d")%(count,total)
+    counter = 0 
 
 print("Download Complete!")
 input("Press Enter to close") 
